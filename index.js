@@ -28,15 +28,24 @@ game.addEventListener('click', function (event) {
         }
         if (id < 4) {
             matrix[id - 1][0] = curr;
+            row = checkingRow(id-1,curr);
+            col = checkingCol(0,curr);
         }
         else if (id < 7) {
             matrix[id - 4][1] = curr;
+            row = checkingRow(id-4,curr);
+            col = checkingCol(1,curr);
         }
         else if (id < 10) {
             matrix[id - 7][2] = curr;
+            row = checkingRow(id-7,curr);
+            col = checkingCol(2,curr);
         }
-        checkRow();
-        checkCol();
+        if(row || col){
+            result.style.visibility = "visible";
+            message.innerHTML = `The winner is ${xo}!`;
+            return;
+        }
         checkDia();
         if (track == 8) {
             result.style.visibility = "visible";
@@ -49,40 +58,16 @@ game.addEventListener('click', function (event) {
     }
 })
 
-function checkRow() {
-    matrix.forEach(row => {
-        let sum = 0;
-        row.forEach(i => sum += i);
-        if (sum == 3) {
-            result.style.visibility = "visible";
-            message.innerHTML = "The winner is X!"
-            return;
-        }
-        if (sum == -3) {
-            result.style.visibility = "visible";
-            message.innerHTML = "The winner is O!"
-            return;
-        }
-    });
+function checkingRow(row, item) {
+    return matrix[row].every((element,index) => { 
+        return element == item; }
+    )
 }
 
-function checkCol() {
-    for (let i = 0; i < 3; i++) {
-        let sum = 0;
-        for (let j = 0; j < 3; j++) {
-            sum += matrix[j][i];
-        }
-        if (sum == 3) {
-            result.style.visibility = "visible";
-            message.innerHTML = "The winner is X!"
-            return;
-        }
-        if (sum == -3) {
-            result.style.visibility = "visible";
-            message.innerHTML = "The winner is O!"
-            return;
-        }
-    }
+function checkingCol(col,item){
+    return matrix.every((arr,index)=>{
+        return arr[col]==item;
+    })
 }
 function checkDia() {
     let lsum = matrix[0][0]+matrix[1][1]+matrix[2][2];
