@@ -28,25 +28,22 @@ game.addEventListener('click', function (event) {
         }
         if (id < 4) {
             matrix[id - 1][0] = curr;
-            row = checkingRow(id-1,curr);
-            col = checkingCol(0,curr);
+            ends = getResult(id-1,0,curr);
         }
         else if (id < 7) {
             matrix[id - 4][1] = curr;
-            row = checkingRow(id-4,curr);
-            col = checkingCol(1,curr);
+            ends = getResult(id-4,1,curr);
         }
         else if (id < 10) {
             matrix[id - 7][2] = curr;
-            row = checkingRow(id-7,curr);
-            col = checkingCol(2,curr);
+            ends = getResult(id-7,2,curr);
         }
-        if(row || col){
+        if(ends){
             result.style.visibility = "visible";
             message.innerHTML = `The winner is ${xo}!`;
             return;
         }
-        checkDia();
+
         if (track == 8) {
             result.style.visibility = "visible";
             message.innerHTML = "Its a Tie"
@@ -58,30 +55,31 @@ game.addEventListener('click', function (event) {
     }
 })
 
-function checkingRow(row, item) {
-    return matrix[row].every((element,index) => { 
+function getResult(row,col,item){
+    let rowE =  matrix[row].every((element) => { 
         return element == item; }
     )
-}
-
-function checkingCol(col,item){
-    return matrix.every((arr,index)=>{
+    let colE = matrix.every((arr)=>{
         return arr[col]==item;
     })
-}
-function checkDia() {
-    let lsum = matrix[0][0]+matrix[1][1]+matrix[2][2];
-    let rsum = matrix[2][0]+matrix[1][1]+matrix[0][2];
-    if (lsum == 3 || rsum == 3) {
-        result.style.visibility = "visible";
-        message.innerHTML = "The winner is X!"
-        return;
+    let diaE = true;
+    for(let i = 0; i < 3; i++){
+        if(matrix[i][i] != item){
+            diaE = false;
+            break;
+        }
     }
-    if (lsum == -3 || rsum == -3) {
-        result.style.visibility = "visible";
-        message.innerHTML = "The winner is O!"
-        return;
+    if(diaE)
+        return true;
+    diaE = true;
+    for(let i = 0; i < 3; i++){
+        if(matrix[2-i][i] != item){
+            diaE = false;
+            break;
+        }
     }
+    console.log(""+rowE+colE+diaE)
+    return rowE || colE || diaE;
 }
 
 playAgain.onclick = () => {
